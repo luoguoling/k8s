@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: h5sdk
+  namespace: fronted
+spec:
+  selector:
+          #project: h5sdk
+    app: h5sdk
+  ports:
+    - port: 80
+      targetPort: 80
+

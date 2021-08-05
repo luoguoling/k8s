@@ -1,0 +1,5 @@
+#前端页面空间
+apiVersion: v1
+kind: Namespace
+metadata:
+          name: fronted

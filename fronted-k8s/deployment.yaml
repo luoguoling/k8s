@@ -1,0 +1,63 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: h5sdk
+  namespace: fronted
+spec:
+  selector:
+    matchLabels:
+      app: h5sdk
+       
+  replicas: 6
+  template:
+    metadata:
+      labels:
+        app: h5sdk
+    spec:
+            #nodeName: k8s-node-01
+      imagePullSecrets:
+      - name: registry-pull-secret
+      containers:
+        - name: nginx
+          image: 10.206.16.4/fronted/www.h5sdk.sentsss.com:44
+          ports:
+            - containerPort: 80
+          volumeMounts:
+                  #- mountPath: /var/www/html
+                  #name:  nginx-www
+            - mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+              name: nginx-config
+            - mountPath: /var/log/nginx
+              name: nginx-log
+            - mountPath: /etc/localtime
+              name: timezone
+          resources:
+            limits:
+              cpu: 40m
+              memory: 100Mi
+            requests:
+              cpu: 10m
+              memory: 50Mi
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution: 
+          - labelSelector:  
+              matchExpressions:
+              - {key: app, operator: In, values: ["h5sdk"]}    
+            topologyKey: fronted 
+      volumes:
+        - name: nginx-log
+          hostPath:
+            path: /opt/log/nginx/h5sdk
+        - name: nginx-config
+          configMap:
+            name: h5sdk
+        - name: timezone
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Shanghai    
+                 #- name: nginx-www
+                 # emptyDir: {}         
+             
+                
+
