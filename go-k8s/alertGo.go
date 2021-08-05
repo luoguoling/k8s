@@ -9,9 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const (
-	webHook_Alert = "https://oapi.dingtalk.com/robot/send?access_token=724402cd85e7e80aa5bbbb7d7a89c74db6a3a8bd8fac4c91923ed3f906664ba4"
-)
+var webHook_Alert = "https://oapi.dingtalk.com/robot/send?access_token=724402cd85e7e80aa5bbbb7d7a89c74db6a3a8bd8fac4c91923ed3f906664ba4"
 type Message struct {
 	MsgType string `json:"msgtype"`
 	Text struct {
@@ -95,7 +93,11 @@ func SendAlertDingMsg(msg string) {
 		}
 	}()
 
-
+        token := os.Getenv("token")
+        if token != ""{
+            fmt.Println("没有获取到环境变量token!!!")
+            webHook_Alert = "https://oapi.dingtalk.com/robot/send?access_token=" + token
+        }
 	fmt.Println("开始发送报警消息!!!")
 	fmt.Println(webHook_Alert)
 	//content := `{"msgtype": "text",
