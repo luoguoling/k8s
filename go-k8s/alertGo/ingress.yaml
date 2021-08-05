@@ -1,0 +1,14 @@
+kind: Ingress # 对象类型
+apiVersion: networking.k8s.io/v1beta1
+metadata:
+  name: alertgo
+  namespace: k8s-go
+spec:
+  rules:
+    - host: alertgo.sentsss.com
+      http:
+        paths:
+        - path: /
+          backend:
+            serviceName: alertgo # 流量转发到名为 php-fpm-nginx 的 Server 是那个
+            servicePort: 80 # 与 Service 的 port 一致

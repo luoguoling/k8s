@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alertgo
+  namespace: k8s-go
+spec:
+  selector:
+    matchLabels:
+      app: alertgo
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: alertgo
+    spec:
+      imagePullSecrets:
+      - name: registry-pull-secret
+      containers:
+        - name: alertgo
+          image: 10.206.16.4/k8s-go/alert.sentsss.com:v6
+          ports:
+            - containerPort: 8088
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8088
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8088
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+            timeoutSeconds: 1
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/bash","-c","sleep 20"]
+          resources:
+            limits:
+              cpu: 20m
+              memory: 40Mi
+            requests:
+              cpu: 10m
